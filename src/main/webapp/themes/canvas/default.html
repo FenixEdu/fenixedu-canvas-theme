@@ -119,8 +119,8 @@
             <div class="wrapper">
                 <div class="collapse navbar-collapse" role="navigation">
                     <ul class="nav navbar-nav list">
-                    		{% if not config.menu.userMenu is empty %}
-                    		{% lazyFor item in config.menu.userMenuStream %}
+                    		{% if not topLevelMenu is empty %}
+                    		{% lazyFor item in topLevelMenu %}
                     		<li class="{% if item == selectedTopLevel %}active{% endif %}"><a href="{{contextPath}}/{{item.path}}" alt="{{item.description.content}}">{{item.title.content}}</a></li>
                         {% endLazyFor %}
                         {% endif %}
