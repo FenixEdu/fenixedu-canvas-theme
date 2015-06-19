@@ -20,40 +20,6 @@
 	<script src="{{contextPath}}/bennu-portal/js/jquery.min.js"></script>
 	<script src="{{contextPath}}/webjars/fenixedu-canvas/js/bootstrap.min.js"></script>
 
-    <style>
-    body {
-        background: #f3f3f3;
-    }
-
-    .main {
-        background: white;
-    }
-    .navbar-fenixedu .submenu {
-        background-color: #39f;
-    }
-    </style>
-    {# PATCHES FOR CANVAS #}
-    <style>
-        .navbar-fenixedu{
-            margin-bottom: -1px;
-        }
-        .navbar-fenixedu .submenu{
-            height:45px;
-        }
-        .main.container{
-            padding-bottom: 20px;
-        }
-        .footer{
-            text-align: center;
-        }
-        .navbar.navbar-fenixedu .submenu .navbar-nav  .active>a{
-            color:white;
-        }
-        .navbar.navbar-fenixedu .submenu .navbar-nav  .active>a:after{
-            border-bottom-color: white;
-        }
-    </style>
-
 	<script> setLang = function(l) {
 	  $.post('{{contextPath}}/api/bennu-core/profile/locale/' + l.replace('_', '-')).always(function() { location.reload(); });
 	}
@@ -62,89 +28,95 @@
 
   <body>
   	{% block body %}
-  	<nav class="navbar navbar-fenixedu navbar-static-top" role="navigation">
-  			{% block topbar %}
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-            </div>
-            <ul class="nav navbar-nav">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <h1 class="navbar-brand">{{config.applicationTitle.content}}</h1>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-left">
-                        <li><a href="#">FenixEdu Academic</a></li>
-                        <li><a href="#">FenixEdu Learning</a></li>
-                        <li><a href="#">FenixEdu Drive</a></li>
-                        <li><a href="#">FenixEdu Gears</a></li>
-                        <li><a href="#">FenixEdu Scholar</a></li>
-                    </ul>
-                </li>
-                <!--<li class="btn btn-icon btn-default"><a href="#"><i class="icon icon-lifebuoy"></i></a></li>-->
-                <li class="dropdown">
-                		{% if loggedUser is null %}
-	                		<a href="#" class="dropdown-toggle avatar" data-toggle="dropdown">
-	                        <img tooltip="{{loggedUser.profile.displayName}}" src="{{contextPath}}/img/mysteryman.svg" class="img-circle">
-	                    </a>
-	                    <ul class="dropdown-menu dropdown-menu-right">
-	                      <li><a href="{{contextPath}}/login">{{ i18n('resources.DefaultThemeResources', 'label.login') }}</a></li>
-											</ul>
-                		{% else %}
-	                    <a href="#" class="dropdown-toggle avatar" data-toggle="dropdown">
-	                        <img tooltip="{{loggedUser.profile.displayName}}" src="{{loggedUser.profile.avatarUrl}}?s=32" class="img-circle">
-	                    </a>
-	                    <ul class="dropdown-menu dropdown-menu-right">
-	                      {% for locale in locales %}
-													{% if locale == currentLocale %}
-														<li class="disabled" ><a href="#">{{ i18n('resources.DefaultThemeResources', locale) }}</a></li>
-													{% else %}
-														<li><a onclick="setLang('{{locale}}')">{{ i18n('resources.DefaultThemeResources', locale) }}</a></li>
-													{% endif %}
-										 		{% endfor %}
-										 		<li><a href="{{contextPath}}/logout">{{ i18n('resources.DefaultThemeResources', 'label.logout') }}</a></li>
-											</ul>
-										{% endif %}
-                </li>
-            </ul>
-                    
-            <div class="scroller scroller-left"><i class="glyphicon glyphicon-chevron-left"></i></div>
-            <div class="scroller scroller-right"><i class="glyphicon glyphicon-chevron-right"></i></div>
-            <div class="wrapper">
-                <div class="collapse navbar-collapse" role="navigation">
-                    <ul class="nav navbar-nav list">
-                    		{% if not topLevelMenu is empty %}
-                    		{% lazyFor item in topLevelMenu %}
-                    		<li class="{% if item == selectedTopLevel %}active{% endif %}"><a href="{{contextPath}}/{{item.path}}" alt="{{item.description.content}}">{{item.title.content}}</a></li>
-                        {% endLazyFor %}
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-        {% endblock %}
-                    
-        <div class="submenu">
+    <nav class="navbar navbar-default navbar-fenixedu navbar-static-top" role="navigation">
+        {% block topbar %}
             <div class="container">
-                <div class="navbar">
-                    <ul class="nav navbar-nav" menu="{{id}}">
-                    	{% lazyFor child in selectedTopLevel.userMenuStream %}
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle navbar-brand" data-toggle="dropdown">
+                            {{config.applicationTitle.content}}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-left">
+                            <li><a href="#">FenixEdu Academic</a></li>
+                            <li><a href="#">FenixEdu Learning</a></li>
+                            <li><a href="#">FenixEdu Drive</a></li>
+                            <li><a href="#">FenixEdu Gears</a></li>
+                            <li><a href="#">FenixEdu Scholar</a></li>
+                        </ul>
+                    </li>
+                    <li id="navbar-help"><a href="#" class="navbar-icon"><i class="icon icon-lifebuoy"></i></a></li>
 
-                            <li{% if child is in(pathFromRoot) %} class="active"{% endif %}><a href="{{contextPath}}{{child.fullPath}}" alt="{{ child.description.content }}"><span>{{ child.title.content }}</span></a></li>
-						{% endLazyFor %}
-                    </ul>
+                    <li class="dropdown">
+                            {% if loggedUser is null %}
+                                <a href="#" class="dropdown-toggle avatar" data-toggle="dropdown">
+                                <img tooltip="{{loggedUser.profile.displayName}}" src="{{contextPath}}/img/mysteryman.svg">
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                              <li><a href="{{contextPath}}/login">{{ i18n('resources.DefaultThemeResources', 'label.login') }}</a></li>
+                                                </ul>
+                            {% else %}
+                            <a href="#" class="dropdown-toggle avatar" data-toggle="dropdown">
+                                <img tooltip="{{loggedUser.profile.displayName}}" src="{{loggedUser.profile.avatarUrl}}?s=32">
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                              {% for locale in locales %}
+                                        {% if locale == currentLocale %}
+                                            <li class="disabled" ><a href="#">{{ i18n('resources.DefaultThemeResources', locale) }}</a></li>
+                                        {% else %}
+                                            <li><a onclick="setLang('{{locale}}')">{{ i18n('resources.DefaultThemeResources', locale) }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <li><a href="{{contextPath}}/logout">{{ i18n('resources.DefaultThemeResources', 'label.logout') }}</a></li>
+                                </ul>
+                            {% endif %}
+                    </li>
+
+
+
+
+
+                </ul>
+           
+                <div class="scroller scroller-left"><i class="glyphicon glyphicon-chevron-left"></i></div>
+                <div class="scroller scroller-right"><i class="glyphicon glyphicon-chevron-right"></i></div>
+                <div class="wrapper">
+                    <div class="collapse navbar-collapse" role="navigation">
+                        <ul class="nav navbar-nav">
+                            {% if not topLevelMenu is empty %}
+                                {% lazyFor item in topLevelMenu %}
+                                    <li class="{% if item == selectedTopLevel %}active{% endif %}"><a href="{{contextPath}}/{{item.path}}" alt="{{item.description.content}}">{{item.title.content}}</a></li>
+                                {% endLazyFor %}
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-    </nav>
+            {% endblock %}
 
-		<div class="main container">
+            <div class="submenu">
+                <div class="container">
+                    <div class="navbar">
+                        <ul class="nav navbar-nav" menu="{{id}}">
+                            {% lazyFor child in selectedTopLevel.userMenuStream %}
+
+                                <li{% if child is in(pathFromRoot) %} class="active"{% endif %}><a href="{{contextPath}}{{child.fullPath}}" alt="{{ child.description.content }}"><span>{{ child.title.content }}</span></a></li>
+                            {% endLazyFor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+		<div class="main container" style="min-height: 95vh;">
 				{{body}}
 		</div>
 
@@ -153,7 +125,7 @@
 		{% block footer %}
         <div class="container">
     		<div class="row">
-    			<div class="col-md-4 col-md-offset-4 footer">
+    			<div class="col-md-12 text-center">
     				{{config.applicationCopyright.content}}
     			</div>
     		</div>
@@ -162,5 +134,33 @@
 		</div>
 
 		{% endblock %}
+
+
+    <div id="bennu-alert">
+        <div class="alert alert-success alert-dismissible alert-floating" role="alert">
+          <button type="button" class="close" data-dismiss="alert"><span class="sr-only">Close</span></button>
+          <i class="icon icon-check"></i>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin gravida, tortor et consectetur aliquam, elit dolor rutrum lectus, eget placerat purus risus bibendum nisi. Maecenas non turpis blandit, rhoncus quam sed, dignissim quam. Ut tempus nisl dui, ac elementum dui vulputate sit amet. Cras diam tortor, placerat eu venenatis in, varius vel purus. Vestibulum eget scelerisque elit, id consequat justo. Praesent ante tortor, interdum sit amet ante ut, blandit consectetur orci. Phasellus aliquam et nibh sed rutrum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper diam et lacus porta eleifend. Mauris tellus nunc, efficitur sed tellus ac, dapibus bibendum massa.
+        </div>
+        <div class="alert alert-danger alert-dismissible alert-floating" role="alert">
+          <button type="button" class="close" data-dismiss="alert"><span class="sr-only">Close</span></button>
+          <i class="icon icon-flash"></i>
+          <strong>Warning!</strong> Better check yourself, you're not looking too good.
+        </div>
+        <div class="alert alert-warning alert-dismissible alert-floating" role="alert">
+          <button type="button" class="close" data-dismiss="alert"><span class="sr-only">Close</span></button>
+          <i class="icon icon-attention"></i>
+          <strong>Warning!</strong> Better check yourself, you're not looking too good.
+        </div>
+        <div class="alert alert-info alert-dismissible alert-floating" role="alert">
+          <button type="button" class="close" data-dismiss="alert"><span class="sr-only">Close</span></button>
+          <i class="icon glyphicon glyphicon-info-sign"></i>
+          <strong>Warning!</strong> Better check yourself, you're not looking too good.
+        </div>
+        <style>
+    #bennu-alert{
+        position:absolute; right:20px; top:70px;width:500px;z-index:10000
+    }
+        </style>
 	</body>
 </html>
