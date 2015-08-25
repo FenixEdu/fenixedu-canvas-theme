@@ -55,7 +55,11 @@
                     {{config.applicationTitle.content}}
                     </a>
                 </li>
-                <li class="navbar-help"><a href="#" class="navbar-icon"><i class="icon icon-lifebuoy"></i></a></li>
+
+                 {% if functionality.documentationUrl is not empty %}
+                    <li class="navbar-help"><a target="_blank" href="{{ functionality.parsedDocumentationUrl }}" class="navbar-icon"><i class="icon icon-lifebuoy"></i></a></li>
+                {% endif %}
+
                 <!--<li class="navbar-choser dropdown">
                     <a href="#" class="dropdown-toggle navbar-icon" data-toggle="dropdown">
                         <i class="icon icon-layout"></i>
