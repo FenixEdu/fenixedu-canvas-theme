@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,133 +9,191 @@
     <meta name="author" content="fenixedu">
 
     <title>{% block title %}{{ functionality.title.content }}{% endblock %}</title>
-    <link href="{{contextPath}}/themes/default/css/style.css" rel="stylesheet">
+    <link href="{{contextPath}}/fenixedu-canvas/css/canvas.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script src="{{contextPath}}/bennu-portal/js/jquery.min.js"></script>
+    <script src="{{contextPath}}/fenixedu-canvas/js/bootstrap.min.js"></script>
+    <script> setLang = function(l) {
+        $.post('{{contextPath}}/api/bennu-core/profile/locale/' + l.replace('_', '-')).always(function() { location.reload(); });
+        }
+    </script>
+    <style>
+    .navbar.navbar-general .submenu {
+        position: absolute;
+        width: 100%;
+        border-bottom: 1px solid #DDD;
+        
+    }
 
-	<script src="{{contextPath}}/bennu-portal/js/jquery.min.js"></script>
-	<script src="{{contextPath}}/webjars/fenixedu-canvas/js/bootstrap.min.js"></script>
+    .navbar.navbar-general .submenu .navbar {
+        min-height: 300px;
+    }
+    </style>
+</head>
 
-	<script> setLang = function(l) {
-	  $.post('{{contextPath}}/api/bennu-core/profile/locale/' + l.replace('_', '-')).always(function() { location.reload(); });
-	}
-	</script>
-  </head>
-
-  <body>
-  	{% block body %}
-    <nav class="navbar navbar-default navbar-fenixedu navbar-static-top" role="navigation">
+<body>
+{% block body %}
+    <nav class="navbar navbar-default navbar-general navbar-static-top" role="navigation">
         {% block topbar %}
-            <div class="container">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                </div>
-                <ul class="nav navbar-nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle navbar-brand" data-toggle="dropdown">
-                            {{config.applicationTitle.content}}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-left">
-                            <li><a href="#">FenixEdu Academic</a></li>
-                            <li><a href="#">FenixEdu Learning</a></li>
-                            <li><a href="#">FenixEdu Drive</a></li>
-                            <li><a href="#">FenixEdu Gears</a></li>
-                            <li><a href="#">FenixEdu Scholar</a></li>
-                        </ul>
-                    </li>
-                    <li id="navbar-help"><a href="#" class="navbar-icon"><i class="icon icon-lifebuoy"></i></a></li>
-
-                    <li class="dropdown">
-                            {% if loggedUser is null %}
-                                <a href="#" class="dropdown-toggle avatar" data-toggle="dropdown">
-                                <img tooltip="{{loggedUser.profile.displayName}}" src="{{contextPath}}/img/mysteryman.svg">
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                              <li><a href="{{contextPath}}/login">{{ i18n('resources.DefaultThemeResources', 'label.login') }}</a></li>
-                                                </ul>
-                            {% else %}
-                            <a href="#" class="dropdown-toggle avatar" data-toggle="dropdown">
-                                <img tooltip="{{loggedUser.profile.displayName}}" src="{{loggedUser.profile.avatarUrl}}?s=32">
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                              {% for locale in locales %}
-                                        {% if locale == currentLocale %}
-                                            <li class="disabled" ><a href="#">{{ i18n('resources.DefaultThemeResources', locale) }}</a></li>
-                                        {% else %}
-                                            <li><a onclick="setLang('{{locale}}')">{{ i18n('resources.DefaultThemeResources', locale) }}</a></li>
-                                        {% endif %}
-                                    {% endfor %}
-                                    <li><a href="{{contextPath}}/logout">{{ i18n('resources.DefaultThemeResources', 'label.logout') }}</a></li>
-                                </ul>
-                            {% endif %}
-                    </li>
-
-
-
-
-
-                </ul>
-           
-                <div class="scroller scroller-left"><i class="glyphicon glyphicon-chevron-left"></i></div>
-                <div class="scroller scroller-right"><i class="glyphicon glyphicon-chevron-right"></i></div>
-                <div class="wrapper">
-                    <div class="collapse navbar-collapse" role="navigation">
-                        <ul class="nav navbar-nav">
-                            {% if not topLevelMenu is empty %}
-                                {% lazyFor item in topLevelMenu %}
-                                    <li class="{% if item == selectedTopLevel %}active{% endif %}"><a href="{{contextPath}}/{{item.path}}" alt="{{item.description.content}}">{{item.title.content}}</a></li>
-                                {% endLazyFor %}
-                            {% endif %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            {% endblock %}
-
-            <div class="submenu">
-                <div class="container">
-                    <div class="navbar">
-                        <ul class="nav navbar-nav" menu="{{id}}">
-                            {% lazyFor child in selectedTopLevel.userMenuStream %}
-
-                                <li{% if child is in(pathFromRoot) %} class="active"{% endif %}><a href="{{contextPath}}{{child.fullPath}}" alt="{{ child.description.content }}"><span>{{ child.title.content }}</span></a></li>
-                            {% endLazyFor %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </nav>
-
-		<div class="main container" style="min-height: 95vh;">
-				{{body}}
-		</div>
-
-		<hr />
-
-		{% block footer %}
         <div class="container">
-    		<div class="row">
-    			<div class="col-md-12 text-center">
-    				{{config.applicationCopyright.content}}
-    			</div>
-    		</div>
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <ul class="nav navbar-nav visible-lg-block visible-md-block navbar-floating-items">
+                <li class="navbar-brand"><a href="#">
+                    {{config.applicationTitle.content}}
+                    </a>
+                </li>
+                <li class="navbar-help"><a href="#" class="navbar-icon"><i class="icon icon-lifebuoy"></i></a></li>
+                <!--<li class="navbar-choser dropdown">
+                    <a href="#" class="dropdown-toggle navbar-icon" data-toggle="dropdown">
+                        <i class="icon icon-layout"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li><a href="#">FenixEdu Academic</a></li>
+                        <li><a href="#">FenixEdu Learning</a></li>
+                        <li><a href="#">FenixEdu Drive</a></li>
+                        <li><a href="#">FenixEdu Gears</a></li>
+                        <li><a href="#">FenixEdu Scholar</a></li>
+                    </ul>
+                </li>-->
+                <li class="navbar-userarea" class="dropdown">
+                    {% if loggedUser is null %}
+                    <a href="#" class="dropdown-toggle avatar" data-toggle="dropdown">
+                        <img tooltip="{{loggedUser.profile.displayName}}" src="{{contextPath}}/img/mysteryman.svg">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li><a href="{{contextPath}}/login">{{ i18n('resources.DefaultThemeResources', 'label.login') }}</a></li>
+                    </ul>
+                    {% else %}
+                    <a href="#" class="dropdown-toggle avatar" data-toggle="dropdown">
+                        <img tooltip="{{loggedUser.profile.displayName}}" src="{{loggedUser.profile.avatarUrl}}?s=32">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        {% for locale in locales %}
+                        {% if locale == currentLocale %}
+                        <li class="disabled" ><a href="#">{{ i18n('resources.DefaultThemeResources', locale) }}</a></li>
+                        {% else %}
+                        <li><a href="#" onclick="setLang('{{locale}}')">{{ i18n('resources.DefaultThemeResources', locale) }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                        <li><a href="{{contextPath}}/logout">{{ i18n('resources.DefaultThemeResources', 'label.logout') }}</a></li>
+                    </ul>
+                    {% endif %}
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-breadcrumb" role="navigation">
+                <li><a href="{{contextPath}}/{{selectedTopLevel.path}}" alt="{{selectedTopLevel.description.content}}">{{selectedTopLevel.title.content}}</a></li>
+                {% lazyFor child in selectedTopLevel.userMenuStream %}
+                    {% if child is in(pathFromRoot) %}
+                    <li><a href="{{contextPath}}{{child.fullPath}}" alt="{{ child.description.content }}">{{ child.title.content }}</a></li>
+                    {% endif %}
+                {% endLazyFor %}
+            </ul>
         </div>
-		{% endblock %}
-		</div>
+        {% endblock %}
 
-		{% endblock %}
+        <div class="submenu" style="display:none;">
+            <div class="container">
+                <div class="navbar">
+                    <a href=""><i class="icon icon-down-open-big"></i></a>
+                    <ul class="nav navbar-nav collapse navbar-collapse navbar-toplevel" menu="{{id}}" role="navigation">
+                    {% lazyFor item in topLevelMenu %}
+                        <li class="{% if item == selectedTopLevel %}active{% endif %}"><a href="{{contextPath}}/{{item.path}}" alt="{{item.description.content}}">{{item.title.content}}</a></li>
+                        <li class="{% if item == selectedTopLevel %}active{% endif %}"><a href="{{contextPath}}/{{item.path}}" alt="{{item.description.content}}">{{item.title.content}}</a></li>
+                        <li class="{% if item == selectedTopLevel %}active{% endif %}"><a href="{{contextPath}}/{{item.path}}" alt="{{item.description.content}}">{{item.title.content}}</a></li>
+                        <li class="{% if item == selectedTopLevel %}active{% endif %}"><a href="{{contextPath}}/{{item.path}}" alt="{{item.description.content}}">{{item.title.content}}</a></li>
+                        <li class="{% if item == selectedTopLevel %}active{% endif %}"><a href="{{contextPath}}/{{item.path}}" alt="{{item.description.content}}">{{item.title.content}}</a></li>
+                        <li class="{% if item == selectedTopLevel %}active{% endif %}"><a href="{{contextPath}}/{{item.path}}" alt="{{item.description.content}}">{{item.title.content}}</a></li>
+                        <li class="{% if item == selectedTopLevel %}active{% endif %}"><a href="{{contextPath}}/{{item.path}}" alt="{{item.description.content}}">{{item.title.content}}</a></li>
+                        <li class="{% if item == selectedTopLevel %}active{% endif %}"><a href="{{contextPath}}/{{item.path}}" alt="{{item.description.content}}">{{item.title.content}}</a></li>
+                        <li class="{% if item == selectedTopLevel %}active{% endif %}"><a href="{{contextPath}}/{{item.path}}" alt="{{item.description.content}}">{{item.title.content}}</a></li>
+                        <li class="{% if item == selectedTopLevel %}active{% endif %}"><a href="{{contextPath}}/{{item.path}}" alt="{{item.description.content}}">{{item.title.content}}</a></li>
+                    {% endLazyFor %} 
+                    </ul>
+                    <ul class="nav navbar-nav" role="navigation">
+                    {% lazyFor child in selectedTopLevel.userMenuStream %}
+                        <li{% if child is in(pathFromRoot) %} class="active"{% endif %}><a href="{{contextPath}}{{child.fullPath}}" alt="{{ child.description.content }}">{{ child.title.content }}</a></li>
+                    {% endLazyFor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
 
+    <div class="main container" style="min-height: 95vh;">
+        {{body}}
+    </div>
+ 
+    
 
+    <hr />
 
-	</body>
+    {% block footer %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                {{config.applicationCopyright.content}}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+{% endblock %}
+    <script>
+        $(".navbar-breadcrumb a").click(function(e){
+            if(!$(".submenu").data("visible")){
+                $(".submenu").slideDown(400,function(){
+                    var element = $(".navbar-toplevel")[0];
+                    if (element.offsetHeight < element.scrollHeight ||
+                        element.offsetWidth < element.scrollWidth) {
+                        $(".navbar-toplevel").addClass("navbar-scrollable")
+                        if($(".navbar-toplevel").scrollTop() == 0) {
+                            $(".navbar-toplevel").addClass("navbar-scrollable-top");
+                        }
+                    }
+                });
+                $(".submenu").data("visible",true)
+                e.preventDefault();
+                return false;
+            }else{
+                $(".submenu").slideUp();
+                $(".submenu").data("visible",false)
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        $(".navbar-toplevel").scroll(function() {
+           if($(".navbar-toplevel").scrollTop() + $(".navbar-toplevel").outerHeight() == $(".navbar-toplevel").prop("scrollHeight")) {
+                $(".navbar-toplevel").addClass("navbar-scrollable-bottom");
+           }else{
+                 $(".navbar-toplevel").removeClass("navbar-scrollable-bottom");
+           }
+
+           if($(".navbar-toplevel").scrollTop() == 0) {
+                $(".navbar-toplevel").addClass("navbar-scrollable-top");
+           }else{
+                 $(".navbar-toplevel").removeClass("navbar-scrollable-top");
+           }
+        });
+
+        $(".submenu").mouseenter(function(){
+            $(document.body).css("overflow","hidden");
+
+        }).mouseleave(function(){
+            $(document.body).css("overflow","visible");
+        })
+    </script>
+</body>
 </html>

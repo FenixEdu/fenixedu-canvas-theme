@@ -29,6 +29,14 @@
         </resources>
     </build>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>fenixedu-canvas</artifactId>
+            <version>1.0.0.RC1</version>
+        </dependency>
+    </dependencies>
+
     <repositories>
         <repository>
             <id>fenixedu-maven-repository</id>
