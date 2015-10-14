@@ -94,12 +94,16 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-breadcrumb" role="navigation">
-                <li><a href="{{contextPath}}/{{selectedTopLevel.path}}" alt="{{selectedTopLevel.description.content}}">{{selectedTopLevel.title.content}}</a></li>
-                {% lazyFor child in selectedTopLevel.userMenuStream %}
-                    {% if child is in(pathFromRoot) %}
-                    <li><a href="{{contextPath}}{{child.fullPath}}" alt="{{ child.description.content }}">{{ child.title.content }}</a></li>
-                    {% endif %}
-                {% endLazyFor %}
+                {% lazyFor path in pathFromRoot %}
+                <li class="dropdown">
+                    <a class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" href="#" alt="{{path.description.content}}">{{path.title.content}}</a>
+                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenu1">
+                        {% lazyFor item in path.parent.userMenuStream %}
+                        <li class="{% if item == path %}active{% endif %}"><a href="{{contextPath}}{{item.fullPath}}" alt="{{item.description.content}}">{{item.title.content}}</a></li>
+                    {% endLazyFor %} 
+                    </ul>
+                </li>
+                {% endLazyFor %} 
             </ul>
         </div>
         {% endblock %}
@@ -109,9 +113,7 @@
                 <div class="navbar">
                     <a href=""><i class="icon icon-down-open-big"></i></a>
                     <ul class="nav navbar-nav collapse navbar-collapse navbar-toplevel" menu="{{id}}" role="navigation">
-                    {% lazyFor item in topLevelMenu %}
-                        <li class="{% if item == selectedTopLevel %}active{% endif %}"><a href="{{contextPath}}/{{item.path}}" alt="{{item.description.content}}">{{item.title.content}}</a></li>
-                    {% endLazyFor %} 
+                    
                     </ul>
                     <ul class="nav navbar-nav" role="navigation">
                     {% lazyFor child in selectedTopLevel.userMenuStream %}
@@ -142,49 +144,49 @@
     {% endblock %}
 {% endblock %}
     <script>
-        $(".navbar-breadcrumb a").click(function(e){
-            if(!$(".submenu").data("visible")){
-                $(".submenu").slideDown(400,function(){
-                    var element = $(".navbar-toplevel")[0];
-                    if (element.offsetHeight < element.scrollHeight ||
-                        element.offsetWidth < element.scrollWidth) {
-                        $(".navbar-toplevel").addClass("navbar-scrollable")
-                        if($(".navbar-toplevel").scrollTop() == 0) {
-                            $(".navbar-toplevel").addClass("navbar-scrollable-top");
-                        }
-                    }
-                });
-                $(".submenu").data("visible",true)
-                e.preventDefault();
-                return false;
-            }else{
-                $(".submenu").slideUp();
-                $(".submenu").data("visible",false)
-                e.preventDefault();
-                return false;
-            }
-        });
+        // $(".navbar-breadcrumb a").click(function(e){
+        //     if(!$(".submenu").data("visible")){
+        //         $(".submenu").slideDown(400,function(){
+        //             var element = $(".navbar-toplevel")[0];
+        //             if (element.offsetHeight < element.scrollHeight ||
+        //                 element.offsetWidth < element.scrollWidth) {
+        //                 $(".navbar-toplevel").addClass("navbar-scrollable")
+        //                 if($(".navbar-toplevel").scrollTop() == 0) {
+        //                     $(".navbar-toplevel").addClass("navbar-scrollable-top");
+        //                 }
+        //             }
+        //         });
+        //         $(".submenu").data("visible",true)
+        //         e.preventDefault();
+        //         return false;
+        //     }else{
+        //         $(".submenu").slideUp();
+        //         $(".submenu").data("visible",false)
+        //         e.preventDefault();
+        //         return false;
+        //     }
+        // });
 
-        $(".navbar-toplevel").scroll(function() {
-           if($(".navbar-toplevel").scrollTop() + $(".navbar-toplevel").outerHeight() == $(".navbar-toplevel").prop("scrollHeight")) {
-                $(".navbar-toplevel").addClass("navbar-scrollable-bottom");
-           }else{
-                 $(".navbar-toplevel").removeClass("navbar-scrollable-bottom");
-           }
+        // $(".navbar-toplevel").scroll(function() {
+        //    if($(".navbar-toplevel").scrollTop() + $(".navbar-toplevel").outerHeight() == $(".navbar-toplevel").prop("scrollHeight")) {
+        //         $(".navbar-toplevel").addClass("navbar-scrollable-bottom");
+        //    }else{
+        //          $(".navbar-toplevel").removeClass("navbar-scrollable-bottom");
+        //    }
 
-           if($(".navbar-toplevel").scrollTop() == 0) {
-                $(".navbar-toplevel").addClass("navbar-scrollable-top");
-           }else{
-                 $(".navbar-toplevel").removeClass("navbar-scrollable-top");
-           }
-        });
+        //    if($(".navbar-toplevel").scrollTop() == 0) {
+        //         $(".navbar-toplevel").addClass("navbar-scrollable-top");
+        //    }else{
+        //          $(".navbar-toplevel").removeClass("navbar-scrollable-top");
+        //    }
+        // });
 
-        $(".submenu").mouseenter(function(){
-            $(document.body).css("overflow","hidden");
+        // $(".submenu").mouseenter(function(){
+        //     $(document.body).css("overflow","hidden");
 
-        }).mouseleave(function(){
-            $(document.body).css("overflow","visible");
-        })
+        // }).mouseleave(function(){
+        //     $(document.body).css("overflow","visible");
+        // })
     </script>
 </body>
 </html>
