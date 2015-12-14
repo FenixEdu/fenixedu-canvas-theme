@@ -7,6 +7,11 @@
     <meta name="description" content="fenixedu">
     <meta name="author" content="fenixedu">
 
+    {% if alerts.size != 0 %}
+    <meta name="alerts" content='{{ alerts }}'>
+    {% endif %}
+
+
     <title>{% block title %}{{ functionality.title.content }} · {{ selectedTopLevel.title.content }}{% endblock %}</title>
     <link href="{{contextPath}}/fenixedu-canvas/css/canvas.css" rel="stylesheet">
 
